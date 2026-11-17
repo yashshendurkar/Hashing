@@ -229,6 +229,105 @@
 
 
 
+// #include <iostream>
+// #include <string>
+// #include <vector>
+// using namespace std;
+
+// // PRN: 202501100067
+// // Question 2: Hash Table Implementation
+// // Commit 5: Display Hash Table and Collisions
+
+// const int TABLE_SIZE = 37;
+
+// // Mid-Square Hash Function
+// int midSquareHash(int key) {
+
+//     int square = key * key;
+
+//     string s = to_string(square);
+
+//     while (s.length() < 4) {
+//         s = "0" + s;
+//     }
+
+//     int middle = stoi(s.substr(1, 2));
+
+//     return middle % TABLE_SIZE;
+// }
+
+// // Insert key using Separate Chaining
+// void insertKey(vector<vector<int>>& hashTable, int key) {
+
+//     int index = midSquareHash(key);
+
+//     hashTable[index].push_back(key);
+// }
+
+// // Display Hash Table
+// void displayHashTable(const vector<vector<int>>& hashTable) {
+
+//     cout << "\n========== HASH TABLE ==========" << endl;
+
+//     for (int i = 0; i < TABLE_SIZE; i++) {
+
+//         cout << i << " : ";
+
+//         if (hashTable[i].empty()) {
+//             cout << "Empty";
+//         }
+//         else {
+
+//             for (int j = 0; j < hashTable[i].size(); j++) {
+
+//                 cout << hashTable[i][j];
+
+//                 if (j != hashTable[i].size() - 1) {
+//                     cout << " -> ";
+//                 }
+//             }
+//         }
+
+//         cout << endl;
+//     }
+
+//     cout << "================================" << endl;
+// }
+
+// int main() {
+
+//     // Dataset reused from Question 1
+//     int arr[12] = {
+//         14, 81, 51, 21, 88, 58,
+//         28, 95, 65, 35, 5, 72
+//     };
+
+//     int n = 12;
+
+//     cout << "Student Marks Dataset:" << endl;
+
+//     for (int i = 0; i < n; i++) {
+//         cout << arr[i] << " ";
+//     }
+
+//     cout << endl;
+
+//     // Create Hash Table
+//     vector<vector<int>> hashTable(TABLE_SIZE);
+
+//     // Insert elements
+//     for (int i = 0; i < n; i++) {
+//         insertKey(hashTable, arr[i]);
+//     }
+
+//     // Display complete Hash Table
+//     displayHashTable(hashTable);
+
+//     return 0;
+// }
+
+
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -236,7 +335,7 @@ using namespace std;
 
 // PRN: 202501100067
 // Question 2: Hash Table Implementation
-// Commit 5: Display Hash Table and Collisions
+// Commit 6: Final Testing and Verification
 
 const int TABLE_SIZE = 37;
 
@@ -262,6 +361,21 @@ void insertKey(vector<vector<int>>& hashTable, int key) {
     int index = midSquareHash(key);
 
     hashTable[index].push_back(key);
+}
+
+// Search key in Hash Table
+bool searchKey(const vector<vector<int>>& hashTable, int key) {
+
+    int index = midSquareHash(key);
+
+    for (int i = 0; i < hashTable[index].size(); i++) {
+
+        if (hashTable[index][i] == key) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Display Hash Table
@@ -315,13 +429,74 @@ int main() {
     // Create Hash Table
     vector<vector<int>> hashTable(TABLE_SIZE);
 
-    // Insert elements
+    // Insert all elements
     for (int i = 0; i < n; i++) {
         insertKey(hashTable, arr[i]);
     }
 
-    // Display complete Hash Table
+    // Display Hash Table
     displayHashTable(hashTable);
+
+    // Final Verification
+    int totalElements = 0;
+    int occupiedBuckets = 0;
+    int collisionBuckets = 0;
+    int totalCollisions = 0;
+
+    for (int i = 0; i < TABLE_SIZE; i++) {
+
+        int bucketSize = hashTable[i].size();
+
+        totalElements += bucketSize;
+
+        if (bucketSize > 0) {
+            occupiedBuckets++;
+        }
+
+        if (bucketSize > 1) {
+            collisionBuckets++;
+            totalCollisions += bucketSize - 1;
+        }
+    }
+
+    cout << "\n========== FINAL VERIFICATION ==========" << endl;
+
+    cout << "Total Elements Inserted: "
+         << totalElements << endl;
+
+    cout << "Total Buckets: "
+         << TABLE_SIZE << endl;
+
+    cout << "Occupied Buckets: "
+         << occupiedBuckets << endl;
+
+    cout << "Collision Buckets: "
+         << collisionBuckets << endl;
+
+    cout << "Total Collisions: "
+         << totalCollisions << endl;
+
+    // Search verification
+    int successfulSearches = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        if (searchKey(hashTable, arr[i])) {
+            successfulSearches++;
+        }
+    }
+
+    cout << "Successful Searches: "
+         << successfulSearches << "/" << n << endl;
+
+    if (totalElements == n && successfulSearches == n) {
+        cout << "Final Status: All Tests Passed!" << endl;
+    }
+    else {
+        cout << "Final Status: Testing Failed!" << endl;
+    }
+
+    cout << "========================================" << endl;
 
     return 0;
 }
